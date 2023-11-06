@@ -1,0 +1,6 @@
+To build and run your docker app you need to use this two commands:
+1- Build the Docker image with command:
+docker build -t node-hello-world .
+
+2- Run the Docker container with command:
+docker run -p 3000:3000 node-hello-world
