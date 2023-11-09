@@ -9,7 +9,8 @@ pipeline {
             agent any
             steps{
                 // Changer avec votre lien gitlab/github
-                git branch: 'main', url:'https://github.com/oussama38546/DevOps.git'
+                checkout([$class: 'GitSCM', branches: [[name: 'master']], userRemoteConfigs: [[url: 'https://github.com/oussama38546/DevOps.git']]])
+                //git branch: 'main', url:'https://github.com/oussama38546/DevOps.git'
             }
         }
         stage('Init'){
