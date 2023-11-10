@@ -7,6 +7,6 @@ spec:
   selector:
     app: nodeapp
   ports:
-    - port: 80
-      targetPort: 80
-      nodePort: 3000
+    - port: 8888
+      targetPort: 8000
+      
