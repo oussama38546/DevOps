@@ -1,5 +1,3 @@
-@Grab(group='commons-codec', module='commons-codec', version='1.15')
-
 pipeline {
     agent any
 
@@ -8,11 +6,13 @@ pipeline {
     }
 
     environment {
+        // Ajouter la variable dh_cred comme variables d'authentification
         DOCKERHUB_CREDENTIALS = credentials('dh_cred')
     }
 
     stages {
         stage('Checkout') {
+            agent any
             steps {
                 checkout scm
             }
@@ -22,6 +22,7 @@ pipeline {
             steps {
                 script {
                     // Importer la classe Base64
+                    @Grab(group='commons-codec', module='commons-codec', version='1.15')
                     import org.apache.commons.codec.binary.Base64
 
                     // Encoder les informations d'authentification en Base64
