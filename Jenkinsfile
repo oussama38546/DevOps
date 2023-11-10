@@ -19,13 +19,16 @@ pipeline {
                 sh 'echo $DOCKERHUB_CREDENTIALS_PSW | docker login -u $DOCKERHUB_CREDENTIALS_USR --password-stdin'
             }
         }
-        stage('Build'){
+        stage('Build') {
             steps {
-                //Changer "username" avec votre username sur DockerHub
-                sh 'docker build -t oussama38546/node:$BUILD_ID -f ./Dockerfile .'
-            }
-            // Run Docker build with proper permissions
+                script {
+                    // Change "username" with your DockerHub username
+                    def dockerImageTag = "oussama38546/node:${BUILD_ID}"
+
+                    // Run Docker build with proper permissions
                     sh "sudo docker build -t ${dockerImageTag} -f ./Dockerfile ."
+                }
+            }
         }
         stage('Deliver'){
             steps {
