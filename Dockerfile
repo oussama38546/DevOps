@@ -4,8 +4,14 @@ FROM node:18
 # Créez un répertoire de travail dans l'image
 WORKDIR /app
 
-# Copiez le fichier app.js dans le répertoire de travail de l'image
-COPY app.js .
+# Copy package.json and package-lock.json to the working directory
+COPY package*.json ./
+
+# Install dependencies
+RUN npm install
+
+# Copy the entire application code to the container
+COPY . .
 
 # Exposez le port sur lequel le serveur écoute
 EXPOSE 8000
