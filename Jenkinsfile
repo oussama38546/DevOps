@@ -17,7 +17,7 @@ pipeline {
         stage('Init') {
             steps {
                 // Permet l'authentification
-                sh "echo \${DOCKERHUB_CREDENTIALS_PSW} | docker login -u \${DOCKERHUB_CREDENTIALS_USR} --password-stdin"
+                sh "echo \${DOCKERHUB_CREDENTIALS_PSW} | sudo docker login -u \${DOCKERHUB_CREDENTIALS_USR} --password-stdin"
             }
         }
         stage('Build') {
