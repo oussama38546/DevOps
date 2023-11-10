@@ -15,23 +15,13 @@ pipeline {
             }
         }
         stage('Init') {
-    steps {
+             steps {
         script {
-            // Créer un dossier de configuration Docker alternatif
-            def dockerConfigDir = env.WORKSPACE + '/.docker'
-            sh "mkdir -p ${dockerConfigDir}"
-
-            // Écrire les informations d'authentification dans le fichier de configuration
-            sh "echo '{\"auths\":{\"https://index.docker.io/v1/\":{\"auth\":\"${DOCKERHUB_CREDENTIALS}\"}}}' > ${dockerConfigDir}/config.json"
-
-            // Configurer l'environnement Docker pour utiliser le dossier de configuration alternatif
-            env.DOCKER_CONFIG = dockerConfigDir
-
-            // Exécuter la commande Docker login sans sudo
-            sh "docker login -u ${DOCKERHUB_CREDENTIALS_USR} --password-stdin < ${dockerConfigDir}/config.json"
+            def dockerAuth = "${DOCKERHUB_CREDENTIALS_USR}:${DOCKERHUB_CREDENTIALS_PSW}".bytes.encodeBase64().toString().trim()
+            sh "echo -n ${dockerAuth} | docker login -u ${DOCKERHUB_CREDENTIALS_USR} --password-stdin"
                 }
-         }
-        }
+            }
+        }   
 
         stage('Build') {
             steps {
