@@ -11,47 +11,20 @@ pipeline {
     }
 
     stages {
-        stage('Checkout') {
-            agent any
-            steps {
-                checkout scm
-            }
-        }
-
-        stage('Init') {
+        stage('Build and Deliver') {
             steps {
                 script {
-                    // Importer la classe Base64
-                    steps {
-                        script {
-                            script {
-                                // Importer la classe Base64
-                                @Grab(group='commons-codec', module='commons-codec', version='1.15')
-                            }
-                        }
-                    }
-
                     // Encoder les informations d'authentification en Base64
                     def dockerAuth = "${DOCKERHUB_CREDENTIALS_USR}:${DOCKERHUB_CREDENTIALS_PSW}"
-                    def encodedAuth = new String(Base64.encodeBase64(dockerAuth.bytes))
+                    def encodedAuth = dockerAuth.bytes.encodeBase64().toString().trim()
 
                     // Exécuter la commande Docker login avec l'option --password-stdin
                     sh "echo -n ${encodedAuth} | docker login -u ${DOCKERHUB_CREDENTIALS_USR} --password-stdin"
+
+                    // Changer "oussama38546" avec votre username sur DockerHub
+                    sh 'docker build -t oussama38546/reactapp:$BUILD_ID .'
+                    sh 'docker push oussama38546/reactapp:$BUILD_ID'
                 }
-            }
-        }
-
-        stage('Build') {
-            steps {
-                // Changer "oussama38546" avec votre username sur DockerHub
-                sh 'docker build -t oussama38546/reactapp:$BUILD_ID .'
-            }
-        }
-
-        stage('Deliver') {
-            steps {
-                // Changer "oussama38546" avec votre username sur DockerHub
-                sh 'docker push oussama38546/reactapp:$BUILD_ID'
             }
         }
 
