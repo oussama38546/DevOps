@@ -24,6 +24,8 @@ pipeline {
                 //Changer "username" avec votre username sur DockerHub
                 sh 'docker build -t oussama38546/node:$BUILD_ID -f ./Dockerfile .'
             }
+            // Run Docker build with proper permissions
+                    sh "sudo docker build -t ${dockerImageTag} -f ./Dockerfile ."
         }
         stage('Deliver'){
             steps {
