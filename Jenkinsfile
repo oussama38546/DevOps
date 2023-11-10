@@ -11,15 +11,18 @@ pipeline {
     }
 
     stages {
+        stage('Checkout') {
+            agent any
+            steps {
+                checkout scm
+            }
+        }
+
         stage('Build and Deliver') {
             steps {
                 script {
-                    // Encoder les informations d'authentification en Base64
-                    def dockerAuth = "${DOCKERHUB_CREDENTIALS_USR}:${DOCKERHUB_CREDENTIALS_PSW}"
-                    def encodedAuth = dockerAuth.bytes.encodeBase64().toString().trim()
-
-                    // Exécuter la commande Docker login avec l'option --password-stdin
-                    sh "echo -n ${encodedAuth} | docker login -u ${DOCKERHUB_CREDENTIALS_USR} --password-stdin"
+                    // Permet l'authentification
+                    sh "echo \${DOCKERHUB_CREDENTIALS_PSW} | docker login -u \${DOCKERHUB_CREDENTIALS_USR} --password-stdin"
 
                     // Changer "oussama38546" avec votre username sur DockerHub
                     sh 'docker build -t oussama38546/reactapp:$BUILD_ID .'
