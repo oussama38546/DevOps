@@ -1,16 +1,17 @@
 pipeline {
     agent any
+    triggers { pollSCM('*/5 * * * *') // Vérifier toutes les 5 minutes
+    }
     environment {
         // Ajouter la variable dh_cred comme variables d'authentification
         DOCKERHUB_CREDENTIALS = credentials('dh_cred')
+
     }
     stages {
         stage('Checkout'){
             agent any
             steps{
-                // Changer avec votre lien gitlab/github
-                checkout([$class: 'GitSCM', branches: [[name: 'master']], userRemoteConfigs: [[url: 'https://github.com/oussama38546/DevOps.git']]])
-                //git branch: 'main', url:'https://github.com/oussama38546/DevOps.git'
+                checkout scm
             }
         }
         stage('Init'){
@@ -19,29 +20,23 @@ pipeline {
                 sh 'echo $DOCKERHUB_CREDENTIALS_PSW | docker login -u $DOCKERHUB_CREDENTIALS_USR --password-stdin'
             }
         }
-        stage('Build') {
+        stage('Build'){
             steps {
-                script {
-                    // Change "username" with your DockerHub username
-                    def dockerImageTag = "oussama38546/node:${BUILD_ID}"
-
-                    // Run Docker build with proper permissions
-                    sh "sudo docker build -t ${dockerImageTag} -f ./Dockerfile ."
-                }
+                //Changer "epsdevops" avec votre username sur DockerHub
+                sh 'docker build -t epsdevops/reactapp:$BUILD_ID .'
             }
         }
         stage('Deliver'){
             steps {
-                //Changer "username" avec votre username sur DockerHub
-                sh 'docker push oussama38546/node:$BUILD_ID'
+                //Changer "epsdevops" avec votre username sur DockerHub
+                sh 'docker push epsdevops/reactapp:$BUILD_ID'
             }
         }
         stage('Cleanup'){
             steps {
-            //Changer "username" avec votre username sur DockerHub
-            sh 'docker rmi oussama38546/node:$BUILD_ID'
-            sh 'docker logout'
+                //Changer "epsdevops" avec votre username sur DockerHub
+                sh 'docker rmi epsdevops/reactapp:$BUILD_ID'
+                sh 'docker logout'
             }
         }
     }
-}
