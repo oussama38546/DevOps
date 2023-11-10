@@ -22,8 +22,14 @@ pipeline {
             steps {
                 script {
                     // Importer la classe Base64
-                    @Grab(group='commons-codec', module='commons-codec', version='1.15')
-                    import org.apache.commons.codec.binary.Base64
+                    steps {
+                        script {
+                            script {
+                                // Importer la classe Base64
+                                @Grab(group='commons-codec', module='commons-codec', version='1.15')
+                            }
+                        }
+                    }
 
                     // Encoder les informations d'authentification en Base64
                     def dockerAuth = "${DOCKERHUB_CREDENTIALS_USR}:${DOCKERHUB_CREDENTIALS_PSW}"
